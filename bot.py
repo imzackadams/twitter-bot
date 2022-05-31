@@ -21,10 +21,9 @@ class TweetPrinterV2(tweepy.StreamingClient):
         print(response)
 
 
-# TODO: test if wait on rate limit works
 printer = TweetPrinterV2(bearer_token, wait_on_rate_limit=True)
 
-#remove old rules
+# remove old rules
 rule_ids = []
 result = printer.get_rules()
 print(result)
@@ -38,8 +37,7 @@ if len(rule_ids) > 0:
 else:
     print("no rules to delete")
 
-
-#add new rules
+# add new rules
 rule_list = ["#techjobs", "#softwarejobs",
              "#careersintech", "#itjobs", "#developerjobs"]
 for rule in rule_list:
