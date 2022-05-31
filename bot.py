@@ -1,6 +1,7 @@
 import tweepy
-from tweepy import StreamingClient, StreamRule
+from tweepy import StreamRule
 import config
+import time
 
 bearer_token = config.BEARER_TOKEN
 
@@ -15,14 +16,18 @@ class TweetPrinterV2(tweepy.StreamingClient):
     def on_tweet(self, tweet):
         print(f"{tweet.id} {tweet.created_at} ({tweet.author_id}): {tweet.text}")
         print("-" * 50)
+        time.sleep(45)
         response = client.retweet(tweet.id)
         print(response)
 
 
-printer = TweetPrinterV2(bearer_token)
+# TODO: test if wait on rate limit works
+printer = TweetPrinterV2(bearer_token, wait_on_rate_limit=True)
 
+#remove old rules
 rule_ids = []
 result = printer.get_rules()
+print(result)
 for rule in result.data:
     print(f"rule marked to delete: {rule.id} - {rule.value}")
     rule_ids.append(rule.id)
@@ -33,8 +38,17 @@ if len(rule_ids) > 0:
 else:
     print("no rules to delete")
 
-# add new rules
-rule = StreamRule(value="amber heard")
-printer.add_rules(rule)
+
+#add new rules
+rule_list = ["#techjobs", "#softwarejobs",
+             "#careersintech", "#itjobs", "#developerjobs"]
+for rule in rule_list:
+    rule = StreamRule(value=rule)
+    printer.add_rules(rule)
+
+# TODO: lookup docs to get author name/id and see if
+#  "cannot retweet" exception is caused by tweet being deleted
+
+# NOTE: bot looks like it also RTs if streamrule is in user bio
 
 printer.filter(expansions="author_id", tweet_fields="created_at")
