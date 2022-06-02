@@ -1,14 +1,16 @@
 import tweepy
 from tweepy import StreamRule
-import config
 import time
+import os
+from dotenv import load_dotenv, find_dotenv
+load_dotenv(find_dotenv())
 
-bearer_token = config.BEARER_TOKEN
 
-client = tweepy.Client(consumer_key=config.API_KEY,
-                       consumer_secret=config.API_SECRET,
-                       access_token=config.ACCESS_TOKEN,
-                       access_token_secret=config.ACCESS_TOKEN_SECRET)
+
+client = tweepy.Client(consumer_key=os.environ.get("API_KEY"),
+                       consumer_secret=os.environ.get("API_KEY_SECRET"),
+                       access_token=os.environ.get("ACCESS_TOKEN"),
+                       access_token_secret=os.environ.get("ACCESS_TOKEN_SECRET"))
 
 
 class TweetPrinterV2(tweepy.StreamingClient):
@@ -25,7 +27,7 @@ class TweetPrinterV2(tweepy.StreamingClient):
             print(f"Failed to retweet {tweet.id}")
 
 
-printer = TweetPrinterV2(bearer_token, wait_on_rate_limit=True)
+printer = TweetPrinterV2(os.environ.get("BEARER_TOKEN"), wait_on_rate_limit=True)
 
 # remove old rules
 rule_ids = []
@@ -37,7 +39,7 @@ for rule in result.data:
 
 if len(rule_ids) > 0:
     printer.delete_rules(rule_ids)
-    printer = TweetPrinterV2(bearer_token)
+    printer = TweetPrinterV2(os.environ.get("BEARER_TOKEN"))
 else:
     print("no rules to delete")
 
