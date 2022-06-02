@@ -18,14 +18,12 @@ class TweetPrinterV2(tweepy.StreamingClient):
         print(f"{tweet.id} {tweet.created_at} ({tweet.author_id}): {tweet.text}")
         print("-" * 50)
         time.sleep(30)
-        response = client.retweet(tweet.id)
-        print(response)
 
-        # try:
-        #     response = client.retweet(tweet.id)
-        #     print(response)
-        # except:
-        #     print(f"Failed to retweet {tweet.id}")
+        try:
+            response = client.retweet(tweet.id)
+            print(response)
+        except:
+            print(f"Failed to retweet {tweet.id}")
 
 
 printer = TweetPrinterV2(os.environ.get("BEARER_TOKEN"), wait_on_rate_limit=True)
