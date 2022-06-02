@@ -51,6 +51,5 @@ for rule in rule_list:
 # TODO: lookup docs to get author name/id and see if
 #  "cannot retweet" exception is caused by tweet being deleted
 
-# NOTE: bot looks like it also RTs if streamrule is in user bio
 
 printer.filter(expansions="author_id", tweet_fields="created_at")
